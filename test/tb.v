@@ -5,9 +5,9 @@
    that can be driven / tested by the cocotb test.py.
 */
 module tb #(
-    parameter integer NTAPS    = 5,
+    parameter integer NTAPS    = 3,
     parameter integer NCH      = 1,
-    parameter integer ACCW     = 12,
+    parameter integer ACCW     = 20,
     parameter integer DEPTH    = 4,
     parameter integer BASELINE = 0
 ) ();

@@ -32,9 +32,9 @@ VERILOG_SOURCES += $(PWD)/gate_level_netlist.v
 endif
 
 # Design parameters for RTL runs, e.g. make NTAPS=5 NCH=1 ACCW=12
-NTAPS ?= 5
+NTAPS ?= 3
 NCH ?= 1
-ACCW ?= 12
+ACCW ?= 20
 DEPTH ?= 4
 BASELINE ?= 0
 ifneq ($(GATES),yes)
