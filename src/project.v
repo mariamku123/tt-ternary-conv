@@ -9,7 +9,7 @@
 module tt_um_mariamku123_ternary_conv #(
     parameter integer NTAPS    = 3,
     parameter integer NCH      = 1,
-    parameter integer ACCW     = 20,
+    parameter integer ACCW     = 16,
     parameter integer DEPTH    = 4,
     parameter integer BASELINE = 0
 ) (
