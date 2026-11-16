@@ -1,0 +1,7 @@
+taps,weights,sqnr_db_median,sqnr_db_p10,zero_weight_frac
+3,ternary,8.37,4.51,0.254
+3,int4,26.87,23.34,
+5,ternary,7.21,4.52,0.278
+5,int4,24.59,21.59,
+7,ternary,6.72,4.46,0.286
+7,int4,23.65,20.78,
