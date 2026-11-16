@@ -4,7 +4,13 @@
 /* This testbench just instantiates the module and makes some convenient wires
    that can be driven / tested by the cocotb test.py.
 */
-module tb ();
+module tb #(
+    parameter integer NTAPS    = 3,
+    parameter integer NCH      = 1,
+    parameter integer ACCW     = 20,
+    parameter integer DEPTH    = 4,
+    parameter integer BASELINE = 0
+) ();
 
   // Dump the signals to a FST file. You can view it with gtkwave or surfer.
   initial begin
@@ -28,7 +34,13 @@ module tb ();
 `endif
 
   // Replace tt_um_example with your module name:
-  tt_um_example user_project (
+`ifdef GL_TEST
+  tt_um_mariamku123_ternary_conv user_project (
+`else
+  tt_um_mariamku123_ternary_conv #(
+      .NTAPS(NTAPS), .NCH(NCH), .ACCW(ACCW), .DEPTH(DEPTH), .BASELINE(BASELINE)
+  ) user_project (
+`endif
 
       // Include power ports for the Gate Level test:
 `ifdef GL_TEST

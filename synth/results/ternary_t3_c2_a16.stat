@@ -1,0 +1,48 @@
+
+9. Printing statistics.
+
+=== tt_um_mariamku123_ternary_conv ===
+
+   Number of wires:               1753
+   Number of wire bits:           2133
+   Number of public wires:          72
+   Number of public wire bits:     450
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               1949
+     gf180mcu_fd_sc_mcu7t5v0__and2_1     74
+     gf180mcu_fd_sc_mcu7t5v0__and3_1     13
+     gf180mcu_fd_sc_mcu7t5v0__and4_1      2
+     gf180mcu_fd_sc_mcu7t5v0__aoi211_1     22
+     gf180mcu_fd_sc_mcu7t5v0__aoi21_1    201
+     gf180mcu_fd_sc_mcu7t5v0__aoi221_1      7
+     gf180mcu_fd_sc_mcu7t5v0__aoi22_1     56
+     gf180mcu_fd_sc_mcu7t5v0__clkinv_1     84
+     gf180mcu_fd_sc_mcu7t5v0__dffq_1    258
+     gf180mcu_fd_sc_mcu7t5v0__mux2_1    134
+     gf180mcu_fd_sc_mcu7t5v0__mux4_1     47
+     gf180mcu_fd_sc_mcu7t5v0__nand2_1    409
+     gf180mcu_fd_sc_mcu7t5v0__nand3_1     33
+     gf180mcu_fd_sc_mcu7t5v0__nand4_1      8
+     gf180mcu_fd_sc_mcu7t5v0__nor2_1    152
+     gf180mcu_fd_sc_mcu7t5v0__nor3_1     12
+     gf180mcu_fd_sc_mcu7t5v0__nor4_1      6
+     gf180mcu_fd_sc_mcu7t5v0__oai211_1     43
+     gf180mcu_fd_sc_mcu7t5v0__oai21_1    209
+     gf180mcu_fd_sc_mcu7t5v0__oai221_1      2
+     gf180mcu_fd_sc_mcu7t5v0__oai222_1      1
+     gf180mcu_fd_sc_mcu7t5v0__oai22_1     18
+     gf180mcu_fd_sc_mcu7t5v0__oai31_1      5
+     gf180mcu_fd_sc_mcu7t5v0__oai32_1      9
+     gf180mcu_fd_sc_mcu7t5v0__oai33_1      1
+     gf180mcu_fd_sc_mcu7t5v0__or2_1     29
+     gf180mcu_fd_sc_mcu7t5v0__or3_1      3
+     gf180mcu_fd_sc_mcu7t5v0__or4_1      4
+     gf180mcu_fd_sc_mcu7t5v0__xnor2_1     34
+     gf180mcu_fd_sc_mcu7t5v0__xnor3_1      9
+     gf180mcu_fd_sc_mcu7t5v0__xor2_1     39
+     gf180mcu_fd_sc_mcu7t5v0__xor3_1     25
+
+   Chip area for module '\tt_um_mariamku123_ternary_conv': 48608.313600
+

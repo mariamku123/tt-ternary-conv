@@ -11,3 +11,9 @@ test/sim_build
 test/__pycache__/
 test/results.xml
 test/gate_level_netlist.v
+build
+labs/*/evidence
+synth/results/*.log
+labs/fifo/test/sim_build
+labs/fifo/test/results.xml
+labs/fifo/test/__pycache__/

@@ -6,7 +6,7 @@ SIM ?= icarus
 FST ?= -fst # Use more efficient FST format
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
-PROJECT_SOURCES = project.v
+PROJECT_SOURCES = project.v tconv_core.v
 
 ifneq ($(GATES),yes)
 
@@ -29,6 +29,16 @@ VERILOG_SOURCES += $(PDK_ROOT)/gf180mcuD/libs.ref/gf180mcu_fd_sc_mcu7t5v0/verilo
 # this gets copied in by the GDS action workflow
 VERILOG_SOURCES += $(PWD)/gate_level_netlist.v
 
+endif
+
+# Design parameters for RTL runs, e.g. make NTAPS=5 NCH=1 ACCW=12
+NTAPS ?= 3
+NCH ?= 1
+ACCW ?= 20
+DEPTH ?= 4
+BASELINE ?= 0
+ifneq ($(GATES),yes)
+COMPILE_ARGS += -Ptb.NTAPS=$(NTAPS) -Ptb.NCH=$(NCH) -Ptb.ACCW=$(ACCW) -Ptb.DEPTH=$(DEPTH) -Ptb.BASELINE=$(BASELINE)
 endif
 
 # Allow sharing configuration between design and testbench via `include`:

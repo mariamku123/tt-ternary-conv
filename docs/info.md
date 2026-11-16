@@ -1,20 +1,20 @@
-<!---
-
-This file is used to generate your project datasheet. Please fill in the information below and delete any unused
-sections.
-
-You can also include images in this folder and reference them in the markdown. Each image must be less than
-512 kb in size, and the combined size of all images must be less than 1 MB.
--->
-
 ## How it works
 
-Explain how your project works
+A streaming 1-D convolution engine, `y[n][c] = sum_k w[c][k] * x[n-k]`, with ternary weights {-1, 0, +1}.
+Each tap adds, subtracts or skips its activation, so there are no multipliers. Taps whose weight or activation
+is zero keep their operand register frozen (operand isolation), which cuts switching activity while the
+latency stays a fixed two cycles. Results are summed with saturation to an `ACCW`-bit accumulator and kept
+in a small buffer that the host reads back over the bidirectional pins.
+
+Parameters: `NTAPS` (3/5/7), `NCH` (1/2), `ACCW` (12/16/20), `DEPTH` (result buffer), `BASELINE`
+(1 = signed INT4 multiplier version for comparison). The full packet protocol is in [protocol.md](protocol.md).
 
 ## How to test
 
-Explain how to use your project
+1. Reset. `uo_out` reads `0x80` (buffer empty).
+2. LOADW the packed weights, CONFIG if needed, then EXEC one activation per clock.
+3. Send READ with `start`, sample `uio_out` each cycle while sending READ, then NOP to release the bus.
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+None. Any microcontroller or the Tiny Tapeout demo board can drive the pins.
