@@ -88,7 +88,8 @@ module tconv_core #(
   // next window contents (what the window holds after an EXEC is accepted)
   reg [7:0] nwin [0:NTAPS-1];
   reg       nnz  [0:NTAPS-1];
-  integer k, c, n;
+  integer k, c, n;            // combinational loop indices
+  integer sk, sc, sn;         // sequential loop indices (separate: shared integers make Yosys infer conflicting drivers)
   always @(*) begin
     nwin[0] = a_ext;
     nnz[0]  = |a_ext;
@@ -191,16 +192,16 @@ module tconv_core #(
 
   always @(posedge clk) begin
     if (!rst_n) begin
-      for (n = 0; n < NW; n = n + 1) begin
-        w[n]   <= {WB{1'b0}};
-        opr[n] <= {OPW{1'b0}};
-        msk[n] <= 1'b0;
+      for (sn = 0; sn < NW; sn = sn + 1) begin
+        w[sn]   <= {WB{1'b0}};
+        opr[sn] <= {OPW{1'b0}};
+        msk[sn] <= 1'b0;
       end
-      for (n = 0; n < NTAPS; n = n + 1) begin
-        win[n] <= 8'd0;
-        nzw[n] <= 1'b0;
+      for (sn = 0; sn < NTAPS; sn = sn + 1) begin
+        win[sn] <= 8'd0;
+        nzw[sn] <= 1'b0;
       end
-      for (n = 0; n < NBUF; n = n + 1) rbuf[n] <= {ACCW{1'b0}};
+      for (sn = 0; sn < NBUF; sn = sn + 1) rbuf[sn] <= {ACCW{1'b0}};
       wl_ptr <= 8'd0; w_loaded <= 1'b0;
       cfg_shift <= 4'd0; cfg_out8 <= 1'b0; cfg_acc <= 1'b0; cfg_zskip <= 1'b1;
       pend <= 1'b0; wi <= {DW{1'b0}}; waddr <= {DW{1'b0}};
@@ -211,10 +212,10 @@ module tconv_core #(
       // ---- stage 2: commit the tap sums of the previous EXEC
       pend <= 1'b0;
       if (pend) begin
-        for (c = 0; c < NCH; c = c + 1) begin
+        for (sc = 0; sc < NCH; sc = sc + 1) begin
           // zero-window skip: nothing to add when accumulating
-          if (!(cfg_acc && !anym[c])) rbuf[waddr*NCH+c] <= totq[c];
-          if (tsat[c]) sat <= 1'b1;
+          if (!(cfg_acc && !anym[sc])) rbuf[waddr*NCH+sc] <= totq[sc];
+          if (tsat[sc]) sat <= 1'b1;
         end
       end
 
@@ -237,8 +238,8 @@ module tconv_core #(
             if (lidx >= NWBYTES) begin
               raise(E_WOVF);
             end else begin
-              for (n = 0; n < NW; n = n + 1)
-                if (n / WPB == lidx) w[n] <= uio_in[(n%WPB)*WB+:WB];
+              for (sn = 0; sn < NW; sn = sn + 1)
+                if (sn / WPB == lidx) w[sn] <= uio_in[(sn%WPB)*WB+:WB];
               if (bad_code) raise(E_WCODE);
               wl_ptr <= lidx + 8'd1;
               if (last) begin
@@ -254,21 +255,21 @@ module tconv_core #(
             else if (prec == 2'd3)               raise(E_PREC);
             else if (!start && wi >= DEPTH)      raise(E_FULL);
             else begin
-              for (k = 0; k < NTAPS; k = k + 1) begin
-                win[k] <= nwin[k];
-                nzw[k] <= nnz[k];
+              for (sk = 0; sk < NTAPS; sk = sk + 1) begin
+                win[sk] <= nwin[sk];
+                nzw[sk] <= nnz[sk];
               end
-              for (c = 0; c < NCH; c = c + 1)
-                for (k = 0; k < NTAPS; k = k + 1) begin
+              for (sc = 0; sc < NCH; sc = sc + 1)
+                for (sk = 0; sk < NTAPS; sk = sk + 1) begin
                   if (BASELINE) begin
-                    opr[c*NTAPS+k] <= $signed(w[c*NTAPS+k]) * $signed(nwin[k]);
-                    msk[c*NTAPS+k] <= 1'b1;
+                    opr[sc*NTAPS+sk] <= $signed(w[sc*NTAPS+sk]) * $signed(nwin[sk]);
+                    msk[sc*NTAPS+sk] <= 1'b1;
                   end else begin
                     // ternary decode: 01 = +1, 11 = -1, 00 / 10 = 0 (skip)
-                    if (w[c*NTAPS+k][0] && (nnz[k] || !cfg_zskip))
-                      opr[c*NTAPS+k] <= w[c*NTAPS+k][1] ? -$signed({nwin[k][7], nwin[k]})
-                                                        :  $signed({nwin[k][7], nwin[k]});
-                    msk[c*NTAPS+k] <= w[c*NTAPS+k][0] && (nnz[k] || !cfg_zskip);
+                    if (w[sc*NTAPS+sk][0] && (nnz[sk] || !cfg_zskip))
+                      opr[sc*NTAPS+sk] <= w[sc*NTAPS+sk][1] ? -$signed({nwin[sk][7], nwin[sk]})
+                                                        :  $signed({nwin[sk][7], nwin[sk]});
+                    msk[sc*NTAPS+sk] <= w[sc*NTAPS+sk][0] && (nnz[sk] || !cfg_zskip);
                   end
                 end
               pend  <= 1'b1;
@@ -303,12 +304,12 @@ module tconv_core #(
             wi <= {DW{1'b0}};
             rd_mode <= 1'b0;
           end else begin
-            for (n = 0; n < NBUF; n = n + 1) rbuf[n] <= {ACCW{1'b0}};
-            for (n = 0; n < NTAPS; n = n + 1) begin
-              win[n] <= 8'd0;
-              nzw[n] <= 1'b0;
+            for (sn = 0; sn < NBUF; sn = sn + 1) rbuf[sn] <= {ACCW{1'b0}};
+            for (sn = 0; sn < NTAPS; sn = sn + 1) begin
+              win[sn] <= 8'd0;
+              nzw[sn] <= 1'b0;
             end
-            for (n = 0; n < NW; n = n + 1) msk[n] <= 1'b0;
+            for (sn = 0; sn < NW; sn = sn + 1) msk[sn] <= 1'b0;
             wi <= {DW{1'b0}}; pend <= 1'b0;
             rd_mode <= 1'b0; err <= 1'b0; sat <= 1'b0; err_code <= 4'd0;
           end
